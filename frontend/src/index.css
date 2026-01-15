@@ -15,6 +15,12 @@ body {
   margin: 0;
   font-family: var(--font-main);
   background-color: var(--bg-primary);
+  /* Subtle Robinhood-style mesh gradient */
+  background-image:
+    radial-gradient(at 0% 0%, hsla(122, 100%, 39%, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(122, 100%, 39%, 0.03) 0px, transparent 50%);
+  background-attachment: fixed;
+  /* Ensures background stays while scrolling */
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
