@@ -147,49 +147,52 @@ export const Searchengine = ({ parentfunc, hideTabs, unhideTabs }) => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Form className="custom-form" onSubmit={handleSubmit} style={{ width: '60%', display: 'flex', justifyContent: 'center' }}>
-        <InputGroup className="mb-3" style={{ border: '3px solid blue', borderRadius: '20px', width: '100%', height: '40px' }}>
+    <div className="search-container">
+      <Form onSubmit={handleSubmit} className="d-flex justify-content-center position-relative">
+        <InputGroup className="search-input-group mb-3">
           <FormControl
             type="text"
             value={query}
             onChange={handleInputChange}
             placeholder="Search for stocks..."
+            className="search-input"
             aria-describedby="basic-addon2"
-            style={{ height: '35px', borderRadius: '20px' }}
           />
           <Button
-            variant="outline-secondary"
-            onClick={() => setQuery('')}
-            style={{ backgroundColor: 'transparent', borderColor: 'transparent', height: '20px', paddingBottom: '10px' }}
-            type="button" // Use type="button" 
+            className="search-btn"
+            onClick={() => { }}
+            type="submit"
           >
-            <BsSearch />
+            <BsSearch size={20} />
           </Button>
           <Button
-            variant="outline-secondary"
+            className="clear-btn"
             onClick={handleClear}
-            style={{ backgroundColor: 'transparent', borderColor: 'transparent' }}
+            type="button"
           >
-            <BsX />
+            <BsX size={24} />
           </Button>
         </InputGroup>
-        {showAutocomplete && !loading && ( // Conditional rendering of autocomplete based on showAutocomplete state and loading state
+
+        {showAutocomplete && !loading && (
           <ul id="autocomplete">
             {filteredSuggestions.map((item) => (
               <li key={item.symbol} onClick={() => handleSelectSuggestion(item.symbol)}>
-                {item.symbol} | {item.description}
+                <span>{item.symbol}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.9em' }}>{item.description}</span>
               </li>
             ))}
           </ul>
         )}
-        {loading && ( // Show loading spinner if loading state is true
-          <Spinner animation="border" role="status" style={{ marginTop: '50px', position: 'absolute', zIndex: '1000', color: 'blue' }}>
-            <span className="sr-only">Loading...</span>
-          </Spinner>
+
+        {loading && (
+          <div className="text-center w-100 position-absolute" style={{ top: '100%', marginTop: '20px' }}>
+            <Spinner animation="border" role="status" variant="success">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </div>
         )}
       </Form>
     </div>
-
   );
 };

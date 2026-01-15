@@ -13,16 +13,16 @@ export const Watchlist = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.post('http://localhost:3001/api/watchlist'); 
+            const response = await axios.post('http://localhost:3001/api/watchlist');
             setData(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    const handleRemoveCard = async(symbol1) => {
+    const handleRemoveCard = async (symbol1) => {
         try {
-            await axios.post(`http://localhost:3001/api/removefav/`, { symbol: symbol1 }); 
+            await axios.post(`http://localhost:3001/api/removefav/`, { symbol: symbol1 });
             // After successful removal, refetch watchlist data
             fetchData();
         } catch (error) {
@@ -31,29 +31,53 @@ export const Watchlist = () => {
     };
 
     return (
-        <div>
-            <h2>My Watchlist</h2>
+        <div className="portfolio-container"> {/* Reuse container style */}
+            <div className="portfolio-header"> {/* Reuse header style */}
+                <h1>My Watchlist</h1>
+            </div>
             {data.map((item, index) => (
-                <Card key={index} className="watchlist-card">
-                     <span className="clos" onClick={() => handleRemoveCard(item.symbol)}
-                        style={{ position: 'absolute', top: '5px', left: '5px', cursor: 'pointer' }}>&times;</span>
-                    <Card.Body>
-                        <Row>
-                            <Col>
-                                <Card.Title>{item.symbol}</Card.Title>
-                                <Card.Text>{item.stockName}</Card.Text>
-                            </Col>
-                            <Col className="text-right">
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <span className="triangle" style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: `5px solid ${item.change > 0 ? 'green' : 'red'}`, marginRight: '5px', transform: `rotate(${item.change > 0 ? 0 : 180}deg)` }}></span>
-                                    <Card.Text style={{ color: item.change > 0 ? 'green' : 'red' }}>{item.change}</Card.Text>
-                                </div>
-                                <Card.Text style={{ color: item.change > 0 ? 'green' : 'red' }}>{item.price}</Card.Text>
-                            </Col>
-                        </Row>
-                    </Card.Body>
-                </Card>
+                <div key={index} className="card portfolio-item-card" style={{ position: 'relative' }}>
+                    <span
+                        className="close-btn"
+                        onClick={() => handleRemoveCard(item.symbol)}
+                        title="Remove from Watchlist"
+                    >
+                        &times;
+                    </span>
+                    <div className="card-header">
+                        <h3>{item.symbol}</h3>
+                    </div>
+                    <div className="portfolio-card-body">
+                        <div className='side1'>
+                            <div className="stat-row">
+                                <span className="stat-label" style={{ alignSelf: "center", fontSize: "1.2rem", fontWeight: "500", color: "#000" }}>{item.stockName}</span>
+                            </div>
+                        </div>
+                        <div className='side2'>
+                            <div className="stat-row">
+                                <span className="stat-label">Change:</span>
+                                <span className={`stat-value ${item.change >= 0 ? 'text-green' : 'text-red'}`}>
+                                    {item.change}
+                                    <span style={{ fontSize: '0.8em', marginLeft: '5px' }}>
+                                        {item.change >= 0 ? '▲' : '▼'}
+                                    </span>
+                                </span>
+                            </div>
+                            <div className="stat-row">
+                                <span className="stat-label">Current Price:</span>
+                                <span className={`stat-value ${item.change >= 0 ? 'text-green' : 'text-red'}`}>
+                                    {item.price}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             ))}
+            {data.length === 0 && (
+                <div className="text-center p-5">
+                    <h4 className="text-muted">Your watchlist is empty.</h4>
+                </div>
+            )}
         </div>
     );
 };
