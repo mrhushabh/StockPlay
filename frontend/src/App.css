@@ -1,0 +1,363 @@
+.nav-pills .nav-link.active {
+  background-color: darkblue;
+  color: white;
+  /* Optional: change text color */
+  border: 1px solid white;
+  border-radius: 10px;
+}
+
+.nav-link {
+  color: lightblue;
+}
+
+.nav-link.active {
+  color: white;
+  /* Set active navigation text color */
+}
+
+.navbar {
+  background-color: darkblue;
+
+  color: lightblue;
+}
+
+.navbar-brand {
+  color: white;
+}
+
+input {
+  width: 400px;
+  padding: 2px 0px;
+  border-radius: 15px;
+  border: 3px solid darkblue;
+  font-size: 20px;
+  color: #bbb;
+  background: none;
+  letter-spacing: 1px;
+  word-spacing: 10px;
+  font-family: 'Arvo', sans-serif;
+  line-height: 25px;
+}
+
+
+#searchBox h1 {
+  padding: 30px;
+}
+
+.topdetails {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.card {
+  margin: 10% 7%;
+  justify-content: center;
+  border: 1px;
+
+}
+
+#logo {
+  height: 100px;
+  width: 100px;
+}
+
+#card1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 0px;
+}
+
+#symbol {
+  padding-left: 40%;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+#Name {
+  padding-left: 25%;
+  font-size: 20px;
+}
+
+#exchange {
+  font-size: 13px;
+}
+
+#buy {
+  width: 60px;
+  margin-left: 30px;
+  height: 35px;
+}
+
+.tradebuttons {
+  display: flex;
+  flex-direction: row;
+}
+
+#card3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+}
+
+#currentp {
+  font-size: 40px;
+}
+
+#percent {
+  font-size: 20px;
+
+}
+
+
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+#Summary {
+  display: flex;
+  flex-direction: row;
+}
+
+
+.scolumn2 {
+  width: 50%;
+  /* align-content: flex-end; */
+  margin: 0% 20%;
+}
+
+
+#autocomplete {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 40px;
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 30%;
+  max-height: 200px;
+  /* Max height for overflow */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
+  z-index: 1000;
+
+}
+
+#autocomplete li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sumc1 {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+
+  justify-content: center;
+  font-size: 80%;
+  margin-top: 4%;
+  margin-bottom: 7%;
+
+}
+
+.sumc2 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  margin-left: 40%;
+  /* justify-content: center; */
+  font-size: 14px;
+
+}
+
+
+#twitterimg {
+  height: 50px;
+  width: 50px;
+}
+
+.Sentimentstable {
+  margin-left: 25%;
+}
+
+#itable {
+  width: 500px;
+  align-content: center;
+}
+
+#insightsheading {
+  margin-left: 40%;
+}
+
+
+#watchcard {
+  border: 1px black;
+}
+
+.tabss .nav-link {
+  color: grey;
+  /* Default tab color */
+  width: 50%;
+  /* Set width of each tab */
+  text-align: center;
+}
+
+.tabss {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.tabss .nav-link.active {
+  color: blue !important;
+  /* Active tab color */
+  border-bottom: 2px solid blue !important;
+  /* Add underline for active tab */
+}
+
+.tabss .nav-item {
+  flex: 1;
+  /* Make each tab fill available space */
+}
+
+.sumc1 {
+  margin-left: 50%;
+  width: 80%;
+}
+
+.triangle-up {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid green;
+  /* Change color as needed */
+  display: inline-block;
+  margin-left: 5px;
+  /* Adjust spacing */
+}
+
+.triangle-down {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 20px solid red;
+  /* Change color as needed */
+  display: inline-block;
+  margin-left: 5px;
+  /* Adjust spacing */
+}
+
+.portfolio-card {
+  display: flex;
+  flex-direction: row;
+}
+
+.side2 {
+  justify-content: flex-end;
+}
+
+.InsightCharts {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .InsightCharts {
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+  }
+}
+
+@media (max-width: 768px) {
+  .Sentimentstable {
+    margin-left: 5%;
+    /* Adjust the margin for smaller screens */
+    max-width: unset;
+    /* Remove the maximum width */
+  }
+}
+
+.watchlist-card {
+  border: 1px solid black;
+  margin: 10px 100px;
+  position: relative;
+}
+
+.clos {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .watchlist-card {
+    margin: 10px 20px;
+  }
+}
+
+
+
+
+@media (max-width: 768px) {
+
+  .scolumn1,
+  .scolumn2 {
+    width: 50%;
+  }
+
+  #Summary {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.company-peers {
+  display: flex;
+
+}
+
+.company-peers p {
+  margin-right: 10px;
+}
