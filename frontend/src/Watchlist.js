@@ -1,28 +1,41 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { watchlistApi } from './services/api';
 import { useNumberFormat } from './hooks/useStock';
 import './App.css';
 
 /**
  * Watchlist Component
- * Displays user's favorite stocks with real-time data
- * Refactored to use centralized API service and custom hooks
+ * Displays user's favorite stocks with click navigation
  */
 export const Watchlist = () => {
     const [stocks, setStocks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { formatNumber } = useNumberFormat();
+    const navigate = useNavigate();
 
     const fetchWatchlist = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
             const response = await watchlistApi.getAll();
-            setStocks(response.data || []);
+            // Ensure we always have an array
+            const data = response.data;
+            if (Array.isArray(data)) {
+                setStocks(data);
+            } else if (data && Array.isArray(data.list)) {
+                setStocks(data.list);
+            } else if (data && typeof data === 'object') {
+                // Convert object values to array if it's an object
+                setStocks(Object.values(data).filter(item => item && item.symbol));
+            } else {
+                setStocks([]);
+            }
         } catch (err) {
             setError('Failed to load watchlist');
             console.error('Error fetching watchlist:', err);
+            setStocks([]);
         } finally {
             setLoading(false);
         }
@@ -35,13 +48,15 @@ export const Watchlist = () => {
     const handleRemoveStock = async (symbol) => {
         try {
             await watchlistApi.remove(symbol);
-            // Optimistic update
             setStocks(prevStocks => prevStocks.filter(stock => stock.symbol !== symbol));
         } catch (err) {
             console.error('Error removing stock:', err);
-            // Refetch to ensure consistency
             fetchWatchlist();
         }
+    };
+
+    const handleStockClick = (symbol) => {
+        navigate(`/analytics/${symbol}`);
     };
 
     if (loading) {
@@ -90,6 +105,7 @@ export const Watchlist = () => {
                         key={stock.symbol || index}
                         stock={stock}
                         onRemove={handleRemoveStock}
+                        onNavigate={handleStockClick}
                         formatNumber={formatNumber}
                     />
                 ))
@@ -100,16 +116,28 @@ export const Watchlist = () => {
 
 /**
  * Individual Watchlist Card Component
- * Extracted for better separation of concerns
  */
-const WatchlistCard = ({ stock, onRemove, formatNumber }) => {
+const WatchlistCard = ({ stock, onRemove, onNavigate, formatNumber }) => {
     const isPositive = parseFloat(stock.change) >= 0;
 
+    const handleClick = (e) => {
+        // Don't navigate if clicking the remove button
+        if (e.target.closest('.close-btn')) return;
+        onNavigate(stock.symbol);
+    };
+
     return (
-        <div className="card portfolio-item-card" style={{ position: 'relative' }}>
+        <div
+            className="card portfolio-item-card"
+            style={{ position: 'relative', cursor: 'pointer' }}
+            onClick={handleClick}
+        >
             <span
                 className="close-btn"
-                onClick={() => onRemove(stock.symbol)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onRemove(stock.symbol);
+                }}
                 title="Remove from Watchlist"
                 aria-label="Remove from watchlist"
             >
@@ -117,7 +145,7 @@ const WatchlistCard = ({ stock, onRemove, formatNumber }) => {
             </span>
 
             <div className="card-header">
-                <h3>{stock.symbol}</h3>
+                <h3 style={{ color: '#00c805', textDecoration: 'underline' }}>{stock.symbol}</h3>
             </div>
 
             <div className="portfolio-card-body">

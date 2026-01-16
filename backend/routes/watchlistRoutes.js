@@ -13,6 +13,7 @@ router.post('/', validateWatchlistAdd, asyncHandler(watchlistController.addToWat
 router.delete('/:symbol', asyncHandler(watchlistController.removeFromWatchlist));
 
 // Legacy routes (for backward compatibility)
+router.get('/watchlist', asyncHandler(watchlistController.getWatchlist));
 router.post('/watchlist', asyncHandler(watchlistController.getWatchlist));
 router.post('/addfav', validateWatchlistAdd, asyncHandler(watchlistController.addToWatchlist));
 router.post('/removefav', asyncHandler(watchlistController.removeFromWatchlist));

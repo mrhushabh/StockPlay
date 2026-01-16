@@ -55,14 +55,15 @@ export const Searchengine = ({ parentfunc, hideTabs, unhideTabs }) => {
 
     // Show autocomplete only if there's a query
     setShowAutocomplete(!!query);
-    if (query.length > 0) {
-      // If there are suggestions, select the first suggestion
-      // handleSelectSuggestion(filteredSuggestions[0].symbol);
-      // unhideTabs()
-    } else if (ticker) {
+  }, [query, suggestions]);
+
+  // Dedicated effect to handle ticker URL parameter (from Portfolio/Watchlist navigation)
+  useEffect(() => {
+    if (ticker) {
       handleSelectSuggestion(ticker);
     }
-  }, [query, suggestions, ticker]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ticker]);
 
   const handleInputChange = async (event) => {
     const inputValue = event.target.value;

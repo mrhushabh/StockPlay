@@ -55,13 +55,13 @@ const removeFromWatchlist = async (req, res) => {
  * Check if stock is in watchlist
  */
 const checkWatchlistStatus = async (req, res) => {
-    const { stockName } = req.body;
+    const { symbol } = req.body;
 
-    if (!stockName) {
-        return res.status(400).json({ error: 'Stock name is required' });
+    if (!symbol) {
+        return res.status(400).json({ error: 'Symbol is required' });
     }
 
-    const item = await Fav.findOne({ stockName });
+    const item = await Fav.findOne({ symbol: symbol.toUpperCase() });
     res.json({ starstate: !!item });
 };
 

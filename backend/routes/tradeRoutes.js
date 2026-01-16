@@ -14,7 +14,7 @@ const { tradeLimiter } = require('../middleware/rateLimiter');
 // GET /api/v1/wallet - Get wallet balance
 router.get('/wallet', asyncHandler(tradeController.getBalance));
 
-// GET /api/v1/portfolio - Get all holdings
+// GET /api/v1/portfolio - Get all holdings with P/L
 router.get('/portfolio', asyncHandler(tradeController.getPortfolio));
 
 // GET /api/v1/portfolio/:stockName - Get specific holding
@@ -26,11 +26,15 @@ router.post('/trade/buy', tradeLimiter, validateTradeRequest, asyncHandler(trade
 // POST /api/v1/trade/sell - Sell stock (atomic, rate limited)
 router.post('/trade/sell', tradeLimiter, validateTradeRequest, asyncHandler(tradeController.sellStock));
 
+// POST /api/v1/portfolio/reset - Reset portfolio (for testing)
+router.post('/portfolio/reset', asyncHandler(tradeController.resetPortfolio));
+
 // ===== Legacy Routes (backward compatibility with /api prefix) =====
 router.post('/Money', asyncHandler(tradeController.getBalance));
 router.post('/portfolio', asyncHandler(tradeController.getPortfolio));
 router.post('/portfoliostock', asyncHandler(tradeController.getStockHolding));
 router.post('/buy', tradeLimiter, validateTradeRequest, asyncHandler(tradeController.buyStock));
 router.post('/sell', tradeLimiter, validateTradeRequest, asyncHandler(tradeController.sellStock));
+router.post('/reset', asyncHandler(tradeController.resetPortfolio));
 
 module.exports = router;

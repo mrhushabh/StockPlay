@@ -643,3 +643,185 @@ a {
   justify-content: flex-end;
   gap: 10px;
 }
+
+/* --- SearchPage Styles --- */
+.search-page {
+  min-height: calc(100vh - 80px);
+  padding: 40px 20px;
+}
+
+.search-page #searchBox {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.search-page #searchBox h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.search-results-list {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-top: 10px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--bg-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.result-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.result-symbol {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--accent-green);
+}
+
+.result-description {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.watchlist-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.watchlist-btn:hover {
+  background-color: var(--bg-secondary);
+  color: var(--accent-green);
+}
+
+.watchlist-btn.in-watchlist {
+  color: #ffc107;
+}
+
+.watchlist-btn.in-watchlist:hover {
+  color: #e6ac00;
+}
+
+.search-empty-state {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+/* --- AnalyticsPage Styles --- */
+.analytics-page {
+  min-height: calc(100vh - 80px);
+  padding: 20px;
+}
+
+.analytics-top-search {
+  max-width: 500px;
+  margin: 0 auto 20px;
+  position: relative;
+}
+
+.analytics-top-search .search-input-group.compact {
+  height: 40px;
+}
+
+.analytics-top-search .search-input-group.compact .search-input {
+  font-size: 0.9rem;
+  padding-left: 1rem;
+}
+
+.analytics-autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.analytics-search-container {
+  max-width: 600px;
+  margin: 40px auto;
+  position: relative;
+}
+
+/* Close button for watchlist items */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.8rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: var(--accent-orange);
+}
+
+/* Portfolio Summary Card */
+.portfolio-summary-card {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+}
+
+.portfolio-summary-card .card-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.portfolio-summary-card .card-header h4 {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Market Status */
+.market-status {
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.market-status p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--accent-green);
+}
+
+.market-status p.closed {
+  color: var(--text-muted);
+}
+
+/* Badge styles */
+.badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+}

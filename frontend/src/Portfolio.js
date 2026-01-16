@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { portfolioApi, walletApi } from './services/api';
 import { useNumberFormat } from './hooks/useStock';
@@ -6,11 +7,11 @@ import './App.css';
 
 /**
  * Portfolio Component
- * Displays user's stock holdings with buy/sell functionality
- * Refactored to use centralized API service and proper patterns
+ * Displays user's stock holdings with P/L calculation
  */
 export const Portfolio = () => {
     const [holdings, setHoldings] = useState([]);
+    const [summary, setSummary] = useState(null);
     const [walletBalance, setWalletBalance] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -22,6 +23,7 @@ export const Portfolio = () => {
     const [quantity, setQuantity] = useState(0);
 
     const { formatNumber, formatCurrency } = useNumberFormat();
+    const navigate = useNavigate();
 
     const fetchData = useCallback(async () => {
         try {
@@ -33,8 +35,21 @@ export const Portfolio = () => {
                 walletApi.getMoney()
             ]);
 
-            setHoldings(portfolioRes.data || []);
-            setWalletBalance(walletRes.data?.Money || 0);
+            // Handle new format with holdings array and summary
+            if (portfolioRes.data.holdings) {
+                setHoldings(portfolioRes.data.holdings);
+                setSummary(portfolioRes.data.summary);
+            } else if (Array.isArray(portfolioRes.data)) {
+                setHoldings(portfolioRes.data);
+            } else {
+                // Legacy format - convert object to array
+                const holdingsArray = Object.values(portfolioRes.data).filter(
+                    item => item && typeof item === 'object' && item.stockName
+                );
+                setHoldings(holdingsArray);
+            }
+
+            setWalletBalance(walletRes.data?.Money || walletRes.data?.balance || 0);
         } catch (err) {
             setError('Failed to load portfolio data');
             console.error('Error fetching portfolio:', err);
@@ -46,6 +61,17 @@ export const Portfolio = () => {
     useEffect(() => {
         fetchData();
     }, [fetchData]);
+
+    const handleReset = async () => {
+        if (window.confirm('Are you sure you want to reset your portfolio? This will delete all holdings and reset your balance to $25,000.')) {
+            try {
+                await portfolioApi.reset();
+                fetchData();
+            } catch (err) {
+                console.error('Reset failed:', err);
+            }
+        }
+    };
 
     const handleOpenBuyModal = (stock) => {
         setSelectedStock(stock);
@@ -62,7 +88,9 @@ export const Portfolio = () => {
     const handleBuy = async () => {
         if (!selectedStock || quantity <= 0) return;
 
-        const totalCost = quantity * parseFloat(selectedStock.price);
+        const price = parseFloat(selectedStock.currentPrice || selectedStock.price) || 0;
+        const totalCost = quantity * price;
+
         if (totalCost > walletBalance) {
             alert('Insufficient funds');
             return;
@@ -71,11 +99,11 @@ export const Portfolio = () => {
         try {
             await portfolioApi.buy({
                 quantity: parseInt(quantity),
-                price: parseFloat(selectedStock.price),
+                price: price,
                 stockName: selectedStock.stockName,
             });
             setShowBuyModal(false);
-            fetchData(); // Refresh data
+            fetchData();
         } catch (err) {
             console.error('Error buying stock:', err);
             alert('Failed to complete purchase');
@@ -93,11 +121,11 @@ export const Portfolio = () => {
         try {
             await portfolioApi.sell({
                 quantity: parseInt(quantity),
-                price: parseFloat(selectedStock.price),
+                price: parseFloat(selectedStock.currentPrice || selectedStock.price),
                 stockName: selectedStock.stockName,
             });
             setShowSellModal(false);
-            fetchData(); // Refresh data
+            fetchData();
         } catch (err) {
             console.error('Error selling stock:', err);
             alert('Failed to complete sale');
@@ -138,7 +166,48 @@ export const Portfolio = () => {
             <div className="portfolio-header">
                 <h1>My Portfolio</h1>
                 <h4>Money in Wallet: {formatCurrency(walletBalance)}</h4>
+                <Button variant="outline-secondary" size="sm" onClick={handleReset} className="mt-2">
+                    Reset Portfolio
+                </Button>
             </div>
+
+            {/* Portfolio Summary */}
+            {summary && (
+                <div className="card portfolio-summary-card mb-4">
+                    <div className="card-header">
+                        <h4>Portfolio Summary</h4>
+                    </div>
+                    <div className="portfolio-card-body">
+                        <div className="side1">
+                            <div className="stat-row">
+                                <span className="stat-label">Total Invested:</span>
+                                <span className="stat-value">{formatCurrency(summary.totalInvested)}</span>
+                            </div>
+                            <div className="stat-row">
+                                <span className="stat-label">Market Value:</span>
+                                <span className="stat-value">{formatCurrency(summary.totalMarketValue)}</span>
+                            </div>
+                        </div>
+                        <div className="side2">
+                            <div className="stat-row">
+                                <span className="stat-label">Unrealized P/L:</span>
+                                <span className={`stat-value ${summary.totalUnrealizedPL >= 0 ? 'text-green' : 'text-red'}`}>
+                                    {formatCurrency(summary.totalUnrealizedPL)}
+                                    <span style={{ fontSize: '0.8em', marginLeft: '5px' }}>
+                                        ({summary.totalUnrealizedPL >= 0 ? '+' : ''}{formatNumber(summary.totalUnrealizedPLPercent)}%)
+                                    </span>
+                                </span>
+                            </div>
+                            <div className="stat-row">
+                                <span className="stat-label">Realized P/L:</span>
+                                <span className={`stat-value ${summary.totalRealizedPL >= 0 ? 'text-green' : 'text-red'}`}>
+                                    {formatCurrency(summary.totalRealizedPL)}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {holdings.length === 0 ? (
                 <div className="text-center p-5">
@@ -152,7 +221,9 @@ export const Portfolio = () => {
                         stock={stock}
                         onBuy={handleOpenBuyModal}
                         onSell={handleOpenSellModal}
+                        onNavigate={(symbol) => navigate(`/analytics/${symbol}`)}
                         formatNumber={formatNumber}
+                        formatCurrency={formatCurrency}
                     />
                 ))
             )}
@@ -190,44 +261,73 @@ export const Portfolio = () => {
 };
 
 /**
- * Individual Portfolio Card Component
+ * Portfolio Card Component with P/L display
  */
-const PortfolioCard = ({ stock, onBuy, onSell, formatNumber }) => {
-    const change = parseFloat(stock.change) || 0;
-    const isPositive = change >= 0;
+const PortfolioCard = ({ stock, onBuy, onSell, onNavigate, formatNumber, formatCurrency }) => {
+    const unrealizedPL = stock.unrealizedPL || stock.change || 0;
+    const unrealizedPLPercent = stock.unrealizedPLPercent || 0;
+    const isPositive = unrealizedPL >= 0;
+
+    const handleStockClick = () => {
+        const symbol = stock.symbol || stock.stockName;
+        if (symbol && onNavigate) {
+            onNavigate(symbol);
+        }
+    };
 
     return (
         <div className="card portfolio-item-card">
-            <div className="card-header">
-                <h3>{stock.stockName}</h3>
+            <div className="card-header" style={{ cursor: 'pointer' }} onClick={handleStockClick}>
+                <h3 style={{ color: '#00c805', textDecoration: 'underline' }}>{stock.stockName}</h3>
+                {stock.realizedPL !== undefined && stock.realizedPL !== 0 && (
+                    <span className={`badge ${stock.realizedPL >= 0 ? 'bg-success' : 'bg-danger'}`}>
+                        Realized: {formatCurrency(stock.realizedPL)}
+                    </span>
+                )}
             </div>
 
             <div className="portfolio-card-body">
                 <div className="side1">
-                    <StatRow label="Quantity" value={stock.quantity} />
-                    <StatRow label="Avg. Cost/Share" value={`$${formatNumber(stock.Average)}`} />
-                    <StatRow label="Total Cost" value={`$${formatNumber(stock.Total)}`} />
+                    <div className="stat-row">
+                        <span className="stat-label">Quantity:</span>
+                        <span className="stat-value">{stock.quantity}</span>
+                    </div>
+                    <div className="stat-row">
+                        <span className="stat-label">Avg. Cost:</span>
+                        <span className="stat-value">{formatCurrency(stock.averageCost || stock.Average)}</span>
+                    </div>
+                    <div className="stat-row">
+                        <span className="stat-label">Total Cost:</span>
+                        <span className="stat-value">{formatCurrency(stock.totalCost || stock.Total)}</span>
+                    </div>
                 </div>
 
                 <div className="side2">
-                    <StatRow
-                        label="Change"
-                        value={formatNumber(change)}
-                        valueClass={isPositive ? 'text-green' : 'text-red'}
-                    />
-                    <StatRow label="Current Price" value={`$${formatNumber(stock.price)}`} />
-                    <StatRow label="Market Value" value={`$${formatNumber(stock.MarketV)}`} />
+                    <div className="stat-row">
+                        <span className="stat-label">Current Price:</span>
+                        <span className="stat-value">{formatCurrency(stock.currentPrice || stock.price)}</span>
+                    </div>
+                    <div className="stat-row">
+                        <span className="stat-label">Market Value:</span>
+                        <span className="stat-value">{formatCurrency(stock.marketValue || stock.MarketV)}</span>
+                    </div>
+                    <div className="stat-row">
+                        <span className="stat-label">Unrealized P/L:</span>
+                        <span className={`stat-value ${isPositive ? 'text-green' : 'text-red'}`}>
+                            {formatCurrency(unrealizedPL)}
+                            <span style={{ fontSize: '0.8em', marginLeft: '5px' }}>
+                                ({isPositive ? '+' : ''}{formatNumber(unrealizedPLPercent)}%)
+                                {isPositive ? ' ▲' : ' ▼'}
+                            </span>
+                        </span>
+                    </div>
                 </div>
             </div>
 
             <div className="card-footer bg-transparent border-0">
-                <button
-                    type="button"
-                    className="btn btn-success mr-2"
-                    onClick={() => onBuy(stock)}
-                >
-                    Buy
-                </button>
+                <Button variant="success" className="mr-2" onClick={() => onBuy(stock)}>
+                    Buy More
+                </Button>
                 <Button variant="danger" onClick={() => onSell(stock)}>
                     Sell
                 </Button>
@@ -235,16 +335,6 @@ const PortfolioCard = ({ stock, onBuy, onSell, formatNumber }) => {
         </div>
     );
 };
-
-/**
- * Stat Row Component for consistent display
- */
-const StatRow = ({ label, value, valueClass = '' }) => (
-    <div className="stat-row">
-        <span className="stat-label">{label}:</span>
-        <span className={`stat-value ${valueClass}`}>{value}</span>
-    </div>
-);
 
 /**
  * Reusable Trade Modal Component
@@ -264,7 +354,8 @@ const TradeModal = ({
 }) => {
     if (!stock) return null;
 
-    const total = quantity * parseFloat(stock.price || 0);
+    const price = parseFloat(stock.currentPrice || stock.price) || 0;
+    const total = quantity * price;
 
     return (
         <Modal show={show} onHide={onHide}>
@@ -272,7 +363,7 @@ const TradeModal = ({
                 <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p>Current Price: ${formatNumber(stock.price)}</p>
+                <p>Current Price: ${formatNumber(price)}</p>
                 {maxQuantity !== undefined && (
                     <p>Available Quantity: {maxQuantity}</p>
                 )}

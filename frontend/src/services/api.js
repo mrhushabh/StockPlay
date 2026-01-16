@@ -6,7 +6,7 @@
 import axios from 'axios';
 
 // Use relative paths - works with proxy in dev and same-origin in production
-const API_BASE = '/api';
+const API_BASE = 'http://localhost:3001/api';
 
 // Create axios instance with default config
 const apiClient = axios.create({
@@ -39,6 +39,7 @@ export const portfolioApi = {
     getByStock: (stockName) => apiClient.post('/portfoliostock', { stockName }),
     buy: (data) => apiClient.post('/buy', data),
     sell: (data) => apiClient.post('/sell', data),
+    reset: () => apiClient.post('/reset'),
 };
 
 // =========================
