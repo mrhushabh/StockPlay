@@ -8,7 +8,7 @@ import axios from 'axios';
 require("highcharts/indicators/indicators")(Highcharts);
 vbp(Highcharts);
 
-export const MainChart=() => {
+export const MainChart = () => {
     const { ticker } = useParams();
     const [chartData, setChartData] = useState({ ohlc: [], volume: [] });
     const groupingUnits = [['week', [1]], ['month', [1, 2, 3, 4, 6]]];
@@ -19,7 +19,7 @@ export const MainChart=() => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3001/api/historical_data?symbol=${ticker}`);
+            const response = await axios.get(`/api/historical_data?symbol=${ticker}`);
             const data = response.data;
             const ohlc = [], volume = [];
             data.forEach(entry => {

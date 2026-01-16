@@ -40,7 +40,7 @@ export const AnalyticsPage = () => {
     // Fetch wallet balance
     const fetchMoney = useCallback(async () => {
         try {
-            const response = await axios.post('http://localhost:3001/api/Money');
+            const response = await axios.post('/api/Money');
             setMoney(response.data.Money || 0);
         } catch (error) {
             console.error('Error fetching money:', error);
@@ -56,10 +56,10 @@ export const AnalyticsPage = () => {
             setError(null);
 
             const [companyRes, quoteRes, peersRes, sentimentsRes] = await Promise.all([
-                axios.get('http://localhost:3001/api/company', { params: { symbol } }),
-                axios.get('http://localhost:3001/api/quote', { params: { symbol } }),
-                axios.get('http://localhost:3001/api/peers', { params: { symbol } }),
-                axios.get('http://localhost:3001/api/Sentiments', { params: { symbol } })
+                axios.get('/api/company', { params: { symbol } }),
+                axios.get('/api/quote', { params: { symbol } }),
+                axios.get('/api/peers', { params: { symbol } }),
+                axios.get('/api/Sentiments', { params: { symbol } })
             ]);
 
             // Calculate sentiment totals
@@ -100,7 +100,7 @@ export const AnalyticsPage = () => {
     // Check watchlist status
     const checkWatchlistStatus = useCallback(async (symbol) => {
         try {
-            const response = await axios.post('http://localhost:3001/api/star', { symbol });
+            const response = await axios.post('/api/star', { symbol });
             setInWatchlist(response.data.starstate);
         } catch (error) {
             console.error('Error checking watchlist:', error);
@@ -110,7 +110,7 @@ export const AnalyticsPage = () => {
     // Check if user owns this stock
     const checkPortfolioStatus = useCallback(async (stockName) => {
         try {
-            const response = await axios.post('http://localhost:3001/api/portfoliostock', { stockName });
+            const response = await axios.post('/api/portfoliostock', { stockName });
             setSellButtonEnabled(response.data[0]?.quantity > 0);
         } catch (error) {
             console.error('Error checking portfolio:', error);
@@ -142,7 +142,7 @@ export const AnalyticsPage = () => {
         }
         try {
             setSearchLoading(true);
-            const response = await axios.get('http://localhost:3001/api/stocks', {
+            const response = await axios.get('/api/stocks', {
                 params: { query: searchQuery }
             });
             const filtered = (response.data.result || []).filter(
@@ -176,7 +176,7 @@ export const AnalyticsPage = () => {
             return;
         }
         try {
-            await axios.post('http://localhost:3001/api/buy', {
+            await axios.post('/api/buy', {
                 quantity,
                 price: stockData.c,
                 stockName: stockData.name,
@@ -195,7 +195,7 @@ export const AnalyticsPage = () => {
 
     const handleSell = async () => {
         try {
-            const portfolioRes = await axios.post('http://localhost:3001/api/portfoliostock', {
+            const portfolioRes = await axios.post('/api/portfoliostock', {
                 stockName: stockData.name
             });
 
@@ -204,7 +204,7 @@ export const AnalyticsPage = () => {
                 return;
             }
 
-            await axios.post('http://localhost:3001/api/sell', {
+            await axios.post('/api/sell', {
                 quantity,
                 price: stockData.c,
                 stockName: stockData.name
@@ -225,11 +225,11 @@ export const AnalyticsPage = () => {
     const handleToggleWatchlist = async () => {
         try {
             if (inWatchlist) {
-                await axios.post('http://localhost:3001/api/removefav', {
+                await axios.post('/api/removefav', {
                     symbol: stockData.ticker,
                 });
             } else {
-                await axios.post('http://localhost:3001/api/addfav', {
+                await axios.post('/api/addfav', {
                     stockName: stockData.name,
                     symbol: stockData.ticker,
                     price: stockData.c,

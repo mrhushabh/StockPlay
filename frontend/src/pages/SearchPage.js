@@ -21,7 +21,7 @@ export const SearchPage = () => {
     // Fetch watchlist to show which items are already added
     const fetchWatchlist = useCallback(async () => {
         try {
-            const response = await axios.post('http://localhost:3001/api/watchlist');
+            const response = await axios.post('/api/watchlist');
             const symbols = new Set(response.data.map(item => item.symbol));
             setWatchlistItems(symbols);
         } catch (error) {
@@ -41,7 +41,7 @@ export const SearchPage = () => {
         }
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:3001/api/stocks', {
+            const response = await axios.get('/api/stocks', {
                 params: { query }
             });
             setSuggestions(response.data.result || []);
@@ -93,7 +93,7 @@ export const SearchPage = () => {
 
         try {
             if (isInWatchlist) {
-                await axios.post('http://localhost:3001/api/removefav', {
+                await axios.post('/api/removefav', {
                     symbol: item.symbol,
                 });
                 setWatchlistItems(prev => {
@@ -103,14 +103,14 @@ export const SearchPage = () => {
                 });
             } else {
                 // Need to get stock data for adding to watchlist
-                const quoteResponse = await axios.get('http://localhost:3001/api/quote', {
+                const quoteResponse = await axios.get('/api/quote', {
                     params: { symbol: item.symbol }
                 });
-                const companyResponse = await axios.get('http://localhost:3001/api/company', {
+                const companyResponse = await axios.get('/api/company', {
                     params: { symbol: item.symbol }
                 });
 
-                await axios.post('http://localhost:3001/api/addfav', {
+                await axios.post('/api/addfav', {
                     stockName: companyResponse.data.name || item.description,
                     symbol: item.symbol,
                     price: quoteResponse.data.c,

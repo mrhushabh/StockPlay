@@ -24,7 +24,7 @@ export const Searchengine = ({ parentfunc, hideTabs, unhideTabs }) => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true); // Set loading state to true when fetching data starts
-      const response = await axios.get('http://localhost:3001/api/stocks', {
+      const response = await axios.get('/api/stocks', {
         params: {
           query: query
         }
@@ -74,22 +74,22 @@ export const Searchengine = ({ parentfunc, hideTabs, unhideTabs }) => {
     unhideTabs();
     setQuery('');
     try {
-      const response1 = await axios.get('http://localhost:3001/api/company', {
+      const response1 = await axios.get('/api/company', {
         params: {
           symbol: suggestion
         }
       });
-      const response3 = await axios.get('http://localhost:3001/api/quote', {
+      const response3 = await axios.get('/api/quote', {
         params: {
           symbol: suggestion
         }
       });
-      const response5 = await axios.get('http://localhost:3001/api/peers', {
+      const response5 = await axios.get('/api/peers', {
         params: {
           symbol: suggestion
         }
       });
-      const response6 = await axios.get('http://localhost:3001/api/Sentiments', {
+      const response6 = await axios.get('/api/Sentiments', {
         params: {
           symbol: suggestion
         }

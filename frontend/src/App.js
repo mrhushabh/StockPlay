@@ -98,7 +98,7 @@ export const Application = () => {
 let Boughtstocks = {};
 const fetchCurrentMoney = async () => {
   try {
-    const response = await axios.post('http://localhost:3001/api/Money');
+    const response = await axios.post('/api/Money');
     Money = response.data.Money;
     console.log(response.data.Money)
     return (response.data.Money); // Assuming the server responds with the money value under the key 'Money'
@@ -193,7 +193,7 @@ const SearchResults = ({ searchResults, updateSearchResults, updateTabData }) =>
       }
       // Money -= totalAmount;
       // console.log(Money)
-      const response = await axios.post('http://localhost:3001/api/buy', {
+      const response = await axios.post('/api/buy', {
 
         quantity,
         price: searchResults.c,
@@ -212,7 +212,7 @@ const SearchResults = ({ searchResults, updateSearchResults, updateTabData }) =>
   const handleSell = async () => {
 
     try {
-      const response2 = await axios.post('http://localhost:3001/api/portfoliostock', { stockName: searchResults.name });
+      const response2 = await axios.post('/api/portfoliostock', { stockName: searchResults.name });
       console.log(response2.data)
       if (response2.data.length === 0) {
         setErrorMessage('No trades found for the specified stock');
@@ -222,7 +222,7 @@ const SearchResults = ({ searchResults, updateSearchResults, updateTabData }) =>
         setErrorMessage('Not enough quantity');
         return;
       }
-      const response1 = await axios.post('http://localhost:3001/api/sell', {
+      const response1 = await axios.post('/api/sell', {
         quantity,
         price: searchResults.c,
         stockName: searchResults.name
@@ -240,7 +240,7 @@ const SearchResults = ({ searchResults, updateSearchResults, updateTabData }) =>
   // Function to check if the stock is in the watchlist
   const checkstar = async () => {
     try {
-      const response = await axios.post(`http://localhost:3001/api/star`, {
+      const response = await axios.post(`/api/star`, {
         symbol: searchResults.ticker,
       });
       setinlist(response.data.starstate);
@@ -266,7 +266,7 @@ const SearchResults = ({ searchResults, updateSearchResults, updateTabData }) =>
       try {
         // console.log(!inlist);
 
-        const response = await axios.post('http://localhost:3001/api/addfav', {
+        const response = await axios.post('/api/addfav', {
           stockName: searchResults.name,
           symbol: searchResults.ticker,
 
@@ -284,7 +284,7 @@ const SearchResults = ({ searchResults, updateSearchResults, updateTabData }) =>
 
     } else {
       try {
-        const response = await axios.post('http://localhost:3001/api/removefav', {
+        const response = await axios.post('/api/removefav', {
 
           symbol: searchResults.ticker,
 

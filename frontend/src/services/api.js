@@ -6,7 +6,7 @@
 import axios from 'axios';
 
 // Use relative paths - works with proxy in dev and same-origin in production
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = '/api';
 
 // Create axios instance with default config
 const apiClient = axios.create({
