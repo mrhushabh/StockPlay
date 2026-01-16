@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 // Components
 import { Navss } from './Navss';
+import { HeartbeatLoader } from './HeartbeatLoader';
 
 // Pages
 import { SearchPage } from './pages/SearchPage';
@@ -17,6 +18,23 @@ import { Watchlist } from './Watchlist';
  * Handles routing between Search, Analytics, Portfolio, and Watchlist
  */
 export const Application = () => {
+  const [loading, setLoading] = useState(true);
+
+  // Initial App Load Simulation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000); // 3 second stock chart intro
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="app-initial-loader">
+        <HeartbeatLoader splash={true} />
+      </div>
+    );
+  }
   return (
     <Router>
       <div className="bodymain">

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { watchlistApi } from './services/api';
 import { useNumberFormat } from './hooks/useStock';
+import { HeartbeatLoader } from './HeartbeatLoader';
 import './App.css';
 
 /**
@@ -66,7 +67,7 @@ export const Watchlist = () => {
                     <h1>My Watchlist</h1>
                 </div>
                 <div className="text-center p-5">
-                    <p>Loading...</p>
+                    <HeartbeatLoader />
                 </div>
             </div>
         );
@@ -145,7 +146,7 @@ const WatchlistCard = ({ stock, onRemove, onNavigate, formatNumber }) => {
             </span>
 
             <div className="card-header">
-                <h3 style={{ color: '#00c805', textDecoration: 'underline' }}>{stock.symbol}</h3>
+                <h3 style={{ color: 'var(--accent-green)', textDecoration: 'underline' }}>{stock.symbol}</h3>
             </div>
 
             <div className="portfolio-card-body">
@@ -153,7 +154,7 @@ const WatchlistCard = ({ stock, onRemove, onNavigate, formatNumber }) => {
                     <div className="stat-row">
                         <span
                             className="stat-label"
-                            style={{ alignSelf: 'center', fontSize: '1.2rem', fontWeight: '500', color: '#000' }}
+                            style={{ alignSelf: 'center', fontSize: '1.2rem', fontWeight: '500' }}
                         >
                             {stock.stockName}
                         </span>

@@ -14,9 +14,10 @@ a {
 
 .navbar-brand {
   color: var(--text-main) !important;
-  font-weight: 800;
+  font-family: var(--font-serif);
+  font-weight: 500;
   letter-spacing: -0.5px;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
 }
 
 .nav-link {
@@ -47,15 +48,19 @@ a {
 }
 
 #searchBox h1 {
-  font-size: 3rem;
-  font-weight: 300;
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 400;
+  /* Serif looks better with lighter weight usually */
   margin-bottom: 2rem;
   text-align: center;
+  color: var(--text-main);
+  line-height: 1.1;
 }
 
 .search-input-group {
   background-color: var(--bg-secondary);
-  border: 1px solid transparent;
+  border: 1px solid var(--border-color);
   border-radius: var(--btn-radius);
   transition: all 0.2s;
   overflow: hidden;
@@ -63,9 +68,9 @@ a {
 }
 
 .search-input-group:focus-within {
-  background-color: var(--bg-primary);
-  border-color: var(--text-main);
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+  background-color: var(--bg-secondary);
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 2px rgba(0, 200, 5, 0.2);
 }
 
 .search-input {
@@ -83,16 +88,20 @@ a {
 
 .search-btn,
 .clear-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-main);
+  background-color: transparent !important;
+  border: none !important;
+  color: var(--accent-green) !important;
+  /* Noticeable Lime Green */
   padding: 0 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .search-btn:hover,
 .clear-btn:hover {
-  background: transparent;
-  color: var(--accent-green);
+  background-color: transparent !important;
+  color: #fff !important;
+  /* White on hover for feedback */
 }
 
 /* Autocomplete Dropdown - Clean List */
@@ -104,10 +113,10 @@ a {
   top: 100%;
   left: 0;
   right: 0;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   max-height: 400px;
   overflow-y: auto;
@@ -138,7 +147,7 @@ a {
   border-radius: 8px !important;
   box-shadow: none !important;
   margin-bottom: 20px;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
 }
 
 .card-header {
@@ -243,11 +252,14 @@ a {
 
 .btn-success {
   background-color: var(--accent-green);
-  color: white;
+  color: #000000;
+  /* Black text on Lime Green */
 }
 
 .btn-success:hover {
-  background-color: #00b304;
+  background-color: #aadb25;
+  /* Slightly darker lime */
+  color: #000000;
 }
 
 .btn-danger {
@@ -270,9 +282,11 @@ a {
 
 /* Modals */
 .modal-content {
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
   border-radius: 16px;
-  border: none;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 .modal-header {
@@ -384,6 +398,24 @@ a {
   /* Align with top of text */
 }
 
+#card1 {
+  /* Company Info Card */
+  text-align: center;
+  color: var(--text-main);
+  /* Ensure text is visible */
+}
+
+#card1 h2 {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+#Name,
+#exchange {
+  color: var(--text-muted-light, #cccccc);
+  /* Slightly softer than pure white */
+}
+
 /* Stats Section (High/Low/Open) */
 .sumc1 {
   display: grid;
@@ -400,6 +432,9 @@ a {
 
 .sumc1 p {
   margin: 0;
+  color: #ededed;
+  /* Light grey for stats visibility */
+  font-weight: 500;
 }
 
 /* About Section */
@@ -410,6 +445,8 @@ a {
   line-height: 1.6;
   max-width: 500px;
   /* Readability width */
+  color: #ededed;
+  /* Light grey for description visibility */
 }
 
 .sumc2 p b {
@@ -436,6 +473,95 @@ a {
   max-width: 600px;
   margin: 0 auto;
 }
+
+/* Heartbeat Loader */
+.heartbeat-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  width: 100%;
+}
+
+.heartbeat-svg {
+  width: 150px;
+  height: 75px;
+  overflow: visible;
+}
+
+.heartbeat-line {
+  fill: none;
+  stroke: var(--accent-green);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: drawLine 2s ease-in-out infinite alternate;
+}
+
+.heartbeat-title {
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  /* Slight glow */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes drawLine {
+  0% {
+    stroke-dashoffset: 200;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.heartbeat-text {
+  margin-top: 1rem;
+  color: var(--accent-green);
+  font-family: 'Courier New', monospace;
+  /* Tech feel */
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  animation: pulseText 1.5s ease-in-out infinite;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+@keyframes pulseText {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Global App Loading Overlay */
+.app-initial-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+
 
 #insightsheading {
   text-align: center;
@@ -563,16 +689,18 @@ a {
   font-size: 2.5rem;
   font-weight: 300;
   margin-bottom: 10px;
+  color: var(--text-main);
 }
 
 .portfolio-header h4 {
   font-size: 1.5rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--text-main);
+  /* Was muted, made main for visibility */
 }
 
 .portfolio-item-card {
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color) !important;
   border-radius: 8px;
   margin-bottom: 24px;
@@ -626,7 +754,8 @@ a {
 
 .stat-label {
   font-size: 0.9rem;
-  color: var(--text-muted);
+  color: #cbcbcb;
+  /* Lighter grey for better visibility */
   font-weight: 500;
 }
 
@@ -800,6 +929,7 @@ a {
 .portfolio-summary-card .card-header h4 {
   margin: 0;
   font-weight: 600;
+  color: var(--text-main);
 }
 
 /* Market Status */

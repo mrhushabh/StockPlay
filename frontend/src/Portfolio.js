@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { portfolioApi, walletApi } from './services/api';
 import { useNumberFormat } from './hooks/useStock';
+import { HeartbeatLoader } from './HeartbeatLoader';
 import './App.css';
 
 /**
@@ -139,7 +140,7 @@ export const Portfolio = () => {
                     <h1>My Portfolio</h1>
                 </div>
                 <div className="text-center p-5">
-                    <p>Loading...</p>
+                    <HeartbeatLoader />
                 </div>
             </div>
         );
@@ -278,7 +279,7 @@ const PortfolioCard = ({ stock, onBuy, onSell, onNavigate, formatNumber, formatC
     return (
         <div className="card portfolio-item-card">
             <div className="card-header" style={{ cursor: 'pointer' }} onClick={handleStockClick}>
-                <h3 style={{ color: '#00c805', textDecoration: 'underline' }}>{stock.stockName}</h3>
+                <h3 style={{ color: 'var(--accent-green)', textDecoration: 'underline' }}>{stock.stockName}</h3>
                 {stock.realizedPL !== undefined && stock.realizedPL !== 0 && (
                     <span className={`badge ${stock.realizedPL >= 0 ? 'bg-success' : 'bg-danger'}`}>
                         Realized: {formatCurrency(stock.realizedPL)}

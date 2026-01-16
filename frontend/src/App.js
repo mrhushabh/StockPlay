@@ -11,8 +11,26 @@ import { Button, Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { Tabsss } from './Tabsss';
 import { Navss } from './Navss';
+import { HeartbeatLoader } from './HeartbeatLoader';
 
 export const Application = () => {
+  const [loading, setLoading] = useState(true);
+
+  // Initial App Load Simulation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000); // 3 second stock chart intro
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="app-initial-loader">
+        <HeartbeatLoader splash={true} />
+      </div>
+    );
+  }
 
 
   // State to store search results

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Spinner, Form, FormControl, Button, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
 import { BsSearch, BsX, BsStarFill, BsStar } from 'react-icons/bs';
+import { HeartbeatLoader } from '../HeartbeatLoader';
 import '../App.css';
 
 /**
@@ -158,7 +159,7 @@ export const SearchPage = () => {
                 {/* Loading indicator */}
                 {loading && (
                     <div className="text-center py-4">
-                        <Spinner animation="border" variant="success" />
+                        <HeartbeatLoader />
                     </div>
                 )}
 

@@ -4,6 +4,7 @@ import { Button, Modal, Form, Card, Image, Spinner, FormControl, InputGroup } fr
 import axios from 'axios';
 import { BsSearch, BsX } from 'react-icons/bs';
 import { Tabsss } from '../Tabsss';
+import { HeartbeatLoader } from '../HeartbeatLoader';
 import '../App.css';
 
 /**
@@ -257,8 +258,7 @@ export const AnalyticsPage = () => {
         return (
             <div className="analytics-page">
                 <div className="text-center py-5">
-                    <Spinner animation="border" variant="success" />
-                    <p className="mt-3">Loading stock data...</p>
+                    <HeartbeatLoader />
                 </div>
             </div>
         );

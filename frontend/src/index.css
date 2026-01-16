@@ -1,26 +1,27 @@
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f5f8fa;
-  --text-main: #000000;
-  --text-muted: #6f787e;
-  --accent-green: #00c805;
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --text-main: #ffffff;
+  --text-muted: #b0b0b0;
+  --accent-green: #c3f53c;
+  /* Robinhood Lime */
   --accent-orange: #ff5000;
-  --border-color: #e3e9ed;
+  --border-color: #2a2a2a;
   --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  --card-radius: 4px;
+  --font-serif: "Times New Roman", Times, serif;
+  /* Fallback editorial style */
+  --card-radius: 8px;
   --btn-radius: 24px;
 }
 
 body {
   margin: 0;
   font-family: var(--font-main);
-  background-color: var(--bg-primary);
-  /* Subtle Robinhood-style mesh gradient */
+  background-color: var(--bg-primary) !important;
+  /* "Earth Glow" effect - Blue/Teal gradient from bottom */
   background-image:
-    radial-gradient(at 0% 0%, hsla(122, 100%, 39%, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(122, 100%, 39%, 0.03) 0px, transparent 50%);
+    radial-gradient(circle at 50% 130%, rgba(30, 75, 120, 0.6) 0%, rgba(0, 0, 0, 0) 60%);
   background-attachment: fixed;
-  /* Ensures background stays while scrolling */
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -40,10 +41,10 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: #333;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #aaa;
+  background: #555;
 }
