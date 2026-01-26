@@ -30,7 +30,7 @@ const getBalance = async (req, res) => {
  * Get all portfolio holdings with P/L
  */
 const getPortfolio = async (req, res) => {
-    const trades = await Trade.find({ quantity: { $gt: 0 } });
+    const trades = await Trade.find({ quantity: { $gt: 0 } }).sort({ updatedAt: -1 });
 
     // Calculate totals
     let totalInvested = 0;

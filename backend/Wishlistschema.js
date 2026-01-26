@@ -8,10 +8,10 @@ const Watchlist = new mongoose.Schema({
   price: Number,
   change: Number,
   percentchange: Number,
+  createdAt: { type: Date, default: Date.now },
 
- 
- 
-  
+
+
 });
 
 

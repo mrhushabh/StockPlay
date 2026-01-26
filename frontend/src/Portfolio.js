@@ -338,7 +338,7 @@ const PortfolioCard = ({ stock, onBuy, onSell, onNavigate, formatNumber, formatC
 };
 
 /**
- * Reusable Trade Modal Component
+ * Reusable Trade Modal Component with Confirmation
  */
 const TradeModal = ({
     show,
@@ -353,46 +353,138 @@ const TradeModal = ({
     formatNumber,
     maxQuantity
 }) => {
+    const [showConfirmation, setShowConfirmation] = React.useState(false);
+    const [error, setError] = React.useState('');
+
+    // Reset confirmation state when modal closes or opens
+    React.useEffect(() => {
+        if (!show) {
+            setShowConfirmation(false);
+            setError('');
+        }
+    }, [show]);
+
     if (!stock) return null;
 
     const price = parseFloat(stock.currentPrice || stock.price) || 0;
     const total = quantity * price;
+    const isBuy = confirmText === 'Buy';
+    const stockName = stock.stockName || stock.name;
+
+    const handleClose = () => {
+        setShowConfirmation(false);
+        setError('');
+        onHide();
+    };
+
+    const handleProceedToConfirmation = () => {
+        if (quantity <= 0) {
+            setError('Please enter a valid quantity');
+            return;
+        }
+        if (maxQuantity !== undefined && quantity > maxQuantity) {
+            setError('Insufficient quantity');
+            return;
+        }
+        setError('');
+        setShowConfirmation(true);
+    };
+
+    const handleBack = () => {
+        setShowConfirmation(false);
+    };
+
+    const handleConfirm = () => {
+        onConfirm();
+        setShowConfirmation(false);
+    };
 
     return (
-        <Modal show={show} onHide={onHide}>
+        <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>{title}</Modal.Title>
+                <Modal.Title>{showConfirmation ? `Confirm ${confirmText} Order` : title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p>Current Price: ${formatNumber(price)}</p>
-                {maxQuantity !== undefined && (
-                    <p>Available Quantity: {maxQuantity}</p>
+                {!showConfirmation ? (
+                    <>
+                        <p>Current Price: ${formatNumber(price)}</p>
+                        {maxQuantity !== undefined && (
+                            <p>Available Quantity: {maxQuantity}</p>
+                        )}
+                        <Form.Group>
+                            <Form.Label>Quantity</Form.Label>
+                            <Form.Control
+                                type="number"
+                                min="0"
+                                max={maxQuantity}
+                                value={quantity}
+                                onChange={(e) => onQuantityChange(parseInt(e.target.value) || 0)}
+                            />
+                        </Form.Group>
+                        <p className="mt-3">
+                            <strong>Total: ${formatNumber(total)}</strong>
+                        </p>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                    </>
+                ) : (
+                    <div style={{
+                        padding: '20px',
+                        backgroundColor: 'var(--bg-secondary)',
+                        borderRadius: '12px',
+                        border: `2px solid ${isBuy ? '#28a745' : '#dc3545'}`
+                    }}>
+                        <h5 style={{ marginBottom: '20px', textAlign: 'center', color: isBuy ? '#28a745' : '#dc3545' }}>
+                            {isBuy ? '📈 Buy Order' : '📉 Sell Order'}
+                        </h5>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>Stock:</span>
+                            <span style={{ fontWeight: 'bold' }}>{stockName}</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>Quantity:</span>
+                            <span style={{ fontWeight: 'bold' }}>{quantity} shares</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>Price per Share:</span>
+                            <span style={{ fontWeight: 'bold' }}>${formatNumber(price)}</span>
+                        </div>
+                        <hr style={{ margin: '16px 0' }} />
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span style={{ fontSize: '18px', fontWeight: 'bold' }}>Total:</span>
+                            <span style={{ fontSize: '18px', fontWeight: 'bold', color: isBuy ? '#28a745' : '#dc3545' }}>
+                                ${formatNumber(total)}
+                            </span>
+                        </div>
+                        <p style={{ textAlign: 'center', marginTop: '16px', color: 'var(--text-muted)', fontSize: '0.9em' }}>
+                            Are you sure you want to {isBuy ? 'buy' : 'sell'} {quantity} shares of {stockName}?
+                        </p>
+                    </div>
                 )}
-                <Form.Group>
-                    <Form.Label>Quantity</Form.Label>
-                    <Form.Control
-                        type="number"
-                        min="0"
-                        max={maxQuantity}
-                        value={quantity}
-                        onChange={(e) => onQuantityChange(parseInt(e.target.value) || 0)}
-                    />
-                </Form.Group>
-                <p className="mt-3">
-                    <strong>Total: ${formatNumber(total)}</strong>
-                </p>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={onHide}>
-                    Cancel
-                </Button>
-                <Button
-                    variant={confirmVariant}
-                    onClick={onConfirm}
-                    disabled={quantity <= 0}
-                >
-                    {confirmText}
-                </Button>
+                {!showConfirmation ? (
+                    <>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant={confirmVariant}
+                            onClick={handleProceedToConfirmation}
+                            disabled={quantity <= 0}
+                        >
+                            {confirmText} {quantity > 0 ? `${quantity} shares` : ''}
+                        </Button>
+                    </>
+                ) : (
+                    <>
+                        <Button variant="secondary" onClick={handleBack}>
+                            ← Back
+                        </Button>
+                        <Button variant={confirmVariant} onClick={handleConfirm}>
+                            ✓ Confirm {confirmText}
+                        </Button>
+                    </>
+                )}
             </Modal.Footer>
         </Modal>
     );

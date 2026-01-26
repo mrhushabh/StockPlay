@@ -176,11 +176,11 @@ export const Searchengine = ({ parentfunc, hideTabs, unhideTabs }) => {
         </InputGroup>
 
         {showAutocomplete && !loading && (
-          <ul id="autocomplete">
+          <ul id="autocomplete" style={{ textAlign: 'left' }}>
             {filteredSuggestions.map((item) => (
-              <li key={item.symbol} onClick={() => handleSelectSuggestion(item.symbol)}>
-                <span>{item.symbol}</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.9em' }}>{item.description}</span>
+              <li key={item.symbol} onClick={() => handleSelectSuggestion(item.symbol)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
+                <span style={{ textAlign: 'left' }}>{item.symbol}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.9em', textAlign: 'left' }}>{item.description}</span>
               </li>
             ))}
           </ul>

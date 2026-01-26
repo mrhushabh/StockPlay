@@ -32,6 +32,8 @@ export const AnalyticsPage = () => {
     const [quantity, setQuantity] = useState(0);
     const [errorMessage, setErrorMessage] = useState('');
     const [money, setMoney] = useState(0);
+    const [showBuyConfirmation, setShowBuyConfirmation] = useState(false);
+    const [showSellConfirmation, setShowSellConfirmation] = useState(false);
 
     // Watchlist state
     const [inWatchlist, setInWatchlist] = useState(false);
@@ -401,54 +403,180 @@ export const AnalyticsPage = () => {
                     <Tabsss ticker={stockData.ticker} data={stockData} />
 
                     {/* Modals */}
-                    <Modal show={showBuyModal} onHide={() => setShowBuyModal(false)}>
+                    <Modal show={showBuyModal} onHide={() => { setShowBuyModal(false); setShowBuyConfirmation(false); setErrorMessage(''); setQuantity(0); }}>
                         <Modal.Header closeButton>
-                            <Modal.Title>{stockData?.ticker}</Modal.Title>
+                            <Modal.Title>{showBuyConfirmation ? 'Confirm Buy Order' : stockData?.ticker}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <p>Current Price: ${stockData?.c}</p>
-                            <p>Money in Wallet: ${money.toFixed(2)}</p>
-                            <Form.Group>
-                                <Form.Label>Quantity</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    value={quantity}
-                                    onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
-                                    min="0"
-                                />
-                            </Form.Group>
+                            {!showBuyConfirmation ? (
+                                <>
+                                    <p>Current Price: ${stockData?.c}</p>
+                                    <p>Money in Wallet: ${money.toFixed(2)}</p>
+                                    <Form.Group>
+                                        <Form.Label>Quantity</Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            value={quantity}
+                                            onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
+                                            min="0"
+                                        />
+                                    </Form.Group>
+                                    <p className="mt-3">Total: ${totalAmount.toFixed(2)}</p>
+                                </>
+                            ) : (
+                                <div style={{ padding: '20px', backgroundColor: 'var(--bg-secondary)', borderRadius: '12px', border: '2px solid #28a745' }}>
+                                    <h5 style={{ marginBottom: '20px', textAlign: 'center', color: '#28a745' }}>📈 Buy Order</h5>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <span style={{ color: 'var(--text-muted)' }}>Stock:</span>
+                                        <span style={{ fontWeight: 'bold' }}>{stockData?.name}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <span style={{ color: 'var(--text-muted)' }}>Symbol:</span>
+                                        <span style={{ fontWeight: 'bold', color: '#28a745' }}>{stockData?.ticker}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <span style={{ color: 'var(--text-muted)' }}>Quantity:</span>
+                                        <span style={{ fontWeight: 'bold' }}>{quantity} shares</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <span style={{ color: 'var(--text-muted)' }}>Price per Share:</span>
+                                        <span style={{ fontWeight: 'bold' }}>${stockData?.c}</span>
+                                    </div>
+                                    <hr style={{ margin: '16px 0' }} />
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <span style={{ fontSize: '18px', fontWeight: 'bold' }}>Total:</span>
+                                        <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#28a745' }}>${totalAmount.toFixed(2)}</span>
+                                    </div>
+                                    <p style={{ textAlign: 'center', marginTop: '16px', color: 'var(--text-muted)', fontSize: '0.9em' }}>
+                                        Are you sure you want to buy {quantity} shares of {stockData?.ticker}?
+                                    </p>
+                                </div>
+                            )}
+                            {errorMessage && <p style={{ color: 'red', marginTop: '12px' }}>{errorMessage}</p>}
                         </Modal.Body>
                         <Modal.Footer>
-                            <p>Total: ${totalAmount.toFixed(2)}</p>
-                            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                            <Button variant="success" onClick={handleBuy} disabled={quantity <= 0}>
-                                Buy
-                            </Button>
+                            {!showBuyConfirmation ? (
+                                <>
+                                    <Button variant="secondary" onClick={() => { setShowBuyModal(false); setQuantity(0); setErrorMessage(''); }}>
+                                        Cancel
+                                    </Button>
+                                    <Button variant="success" onClick={() => {
+                                        if (quantity <= 0) {
+                                            setErrorMessage('Please enter a valid quantity');
+                                            return;
+                                        }
+                                        if (totalAmount > money) {
+                                            setErrorMessage('Insufficient funds');
+                                            return;
+                                        }
+                                        setErrorMessage('');
+                                        setShowBuyConfirmation(true);
+                                    }} disabled={quantity <= 0}>
+                                        Buy {quantity > 0 ? `${quantity} shares` : ''}
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button variant="secondary" onClick={() => setShowBuyConfirmation(false)}>
+                                        ← Back
+                                    </Button>
+                                    <Button variant="success" onClick={handleBuy}>
+                                        ✓ Confirm Buy
+                                    </Button>
+                                </>
+                            )}
                         </Modal.Footer>
                     </Modal>
 
-                    <Modal show={showSellModal} onHide={() => setShowSellModal(false)}>
+                    <Modal show={showSellModal} onHide={() => { setShowSellModal(false); setShowSellConfirmation(false); setErrorMessage(''); setQuantity(0); }}>
                         <Modal.Header closeButton>
-                            <Modal.Title>{stockData?.ticker}</Modal.Title>
+                            <Modal.Title>{showSellConfirmation ? 'Confirm Sell Order' : stockData?.ticker}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <p>Current Price: ${stockData?.c}</p>
-                            <Form.Group>
-                                <Form.Label>Quantity</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    value={quantity}
-                                    onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
-                                    min="0"
-                                />
-                            </Form.Group>
+                            {!showSellConfirmation ? (
+                                <>
+                                    <p>Current Price: ${stockData?.c}</p>
+                                    <Form.Group>
+                                        <Form.Label>Quantity</Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            value={quantity}
+                                            onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
+                                            min="0"
+                                        />
+                                    </Form.Group>
+                                    <p className="mt-3">Total: ${totalAmount.toFixed(2)}</p>
+                                </>
+                            ) : (
+                                <div style={{ padding: '20px', backgroundColor: 'var(--bg-secondary)', borderRadius: '12px', border: '2px solid #dc3545' }}>
+                                    <h5 style={{ marginBottom: '20px', textAlign: 'center', color: '#dc3545' }}>📉 Sell Order</h5>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <span style={{ color: 'var(--text-muted)' }}>Stock:</span>
+                                        <span style={{ fontWeight: 'bold' }}>{stockData?.name}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <span style={{ color: 'var(--text-muted)' }}>Symbol:</span>
+                                        <span style={{ fontWeight: 'bold', color: '#dc3545' }}>{stockData?.ticker}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <span style={{ color: 'var(--text-muted)' }}>Quantity:</span>
+                                        <span style={{ fontWeight: 'bold' }}>{quantity} shares</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <span style={{ color: 'var(--text-muted)' }}>Price per Share:</span>
+                                        <span style={{ fontWeight: 'bold' }}>${stockData?.c}</span>
+                                    </div>
+                                    <hr style={{ margin: '16px 0' }} />
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <span style={{ fontSize: '18px', fontWeight: 'bold' }}>Total:</span>
+                                        <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#dc3545' }}>${totalAmount.toFixed(2)}</span>
+                                    </div>
+                                    <p style={{ textAlign: 'center', marginTop: '16px', color: 'var(--text-muted)', fontSize: '0.9em' }}>
+                                        Are you sure you want to sell {quantity} shares of {stockData?.ticker}?
+                                    </p>
+                                </div>
+                            )}
+                            {errorMessage && <p style={{ color: 'red', marginTop: '12px' }}>{errorMessage}</p>}
                         </Modal.Body>
                         <Modal.Footer>
-                            <p>Total: ${totalAmount.toFixed(2)}</p>
-                            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                            <Button variant="danger" onClick={handleSell} disabled={quantity <= 0}>
-                                Sell
-                            </Button>
+                            {!showSellConfirmation ? (
+                                <>
+                                    <Button variant="secondary" onClick={() => { setShowSellModal(false); setQuantity(0); setErrorMessage(''); }}>
+                                        Cancel
+                                    </Button>
+                                    <Button variant="danger" onClick={async () => {
+                                        if (quantity <= 0) {
+                                            setErrorMessage('Please enter a valid quantity');
+                                            return;
+                                        }
+                                        // Check if user has enough shares
+                                        try {
+                                            const portfolioRes = await axios.post('/api/portfoliostock', {
+                                                stockName: stockData.name
+                                            });
+                                            if (!portfolioRes.data[0] || portfolioRes.data[0].quantity < quantity) {
+                                                setErrorMessage('Not enough shares');
+                                                return;
+                                            }
+                                            setErrorMessage('');
+                                            setShowSellConfirmation(true);
+                                        } catch (error) {
+                                            setErrorMessage('Error checking portfolio');
+                                        }
+                                    }} disabled={quantity <= 0}>
+                                        Sell {quantity > 0 ? `${quantity} shares` : ''}
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button variant="secondary" onClick={() => setShowSellConfirmation(false)}>
+                                        ← Back
+                                    </Button>
+                                    <Button variant="danger" onClick={handleSell}>
+                                        ✓ Confirm Sell
+                                    </Button>
+                                </>
+                            )}
                         </Modal.Footer>
                     </Modal>
                 </>

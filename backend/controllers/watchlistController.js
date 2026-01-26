@@ -8,7 +8,7 @@ const Fav = require('../Wishlistschema');
  * Get all watchlist items
  */
 const getWatchlist = async (req, res) => {
-    const list = await Fav.find();
+    const list = await Fav.find().sort({ createdAt: -1 });
     res.json(list);
 };
 
