@@ -4,6 +4,7 @@ import { Spinner, Form, FormControl, Button, InputGroup } from 'react-bootstrap'
 import axios from 'axios';
 import { BsSearch, BsX, BsStarFill, BsStar } from 'react-icons/bs';
 import { HeartbeatLoader } from '../HeartbeatLoader';
+import DailyInsights from '../components/DailyInsights';
 import '../App.css';
 
 /**
@@ -200,16 +201,28 @@ export const SearchPage = () => {
                 )}
 
                 {/* Empty state */}
-                {!query && (
-                    <div className="search-empty-state">
-                        <p className="text-muted">
-                            Start typing to search for stocks. Click a stock to view analytics,
-                            or click the star to add to your watchlist.
-                        </p>
-                    </div>
-                )}
             </div>
+
+            {/* Empty state & AI Insights */}
+            {!query && (
+                <div className="search-empty-state-wrapper" style={{ marginTop: '20px' }}>
+                    <div className="container text-center" style={{ maxWidth: '800px', margin: '0 auto' }}>
+                        <div className="search-empty-state">
+                            <p className="text-muted">
+                                Start typing to search for stocks. Click a stock to view analytics,
+                                or click the star to add to your watchlist.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Full width container for insights */}
+                    <div style={{ width: '100%', maxWidth: '1600px', margin: '0 auto', padding: '0 20px' }}>
+                        <DailyInsights />
+                    </div>
+                </div>
+            )}
         </div>
+
     );
 };
 

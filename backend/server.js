@@ -19,6 +19,7 @@ const { apiLimiter } = require('./middleware/rateLimiter');
 const tradeRoutes = require('./routes/tradeRoutes');
 const watchlistRoutes = require('./routes/watchlistRoutes');
 const stockRoutes = require('./routes/stockRoutes');
+const recommendationRoutes = require('./routes/recommendationRoutes');
 
 // Initialize app
 const app = express();
@@ -57,6 +58,7 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 app.use(`/api/${API_VERSION}`, tradeRoutes);
 app.use(`/api/${API_VERSION}/watchlist`, watchlistRoutes);
 app.use(`/api/${API_VERSION}`, stockRoutes);
+app.use(`/api/${API_VERSION}/recommendations`, recommendationRoutes);
 
 // Legacy routes (backward compatibility - mounted at /api)
 app.use('/api', tradeRoutes);

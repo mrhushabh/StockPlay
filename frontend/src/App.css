@@ -976,3 +976,26 @@ a {
   border-radius: 4px;
   margin-left: 10px;
 }
+
+/* Daily Insights Horizontal Scrollbar */
+.daily-insights-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.daily-insights-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.daily-insights-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.daily-insights-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 20px;
+}
+
+.daily-insights-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-muted);
+}
