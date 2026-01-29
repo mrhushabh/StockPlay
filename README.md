@@ -2,6 +2,8 @@
 
 A full-stack stock market portfolio tracker built with MongoDB, Express, React, and Node.js.
 
+**🚀 Live Demo:** [StockPlay on Render](https://stockplay.onrender.com/search)
+
 ## Overview
 This application allows users to:
 - Search for stocks using real-time API data.
